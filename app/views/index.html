@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<title>Notes</title>
+    	<link rel="stylesheet" href="/static/css/styles.css" type="text/css">
+    	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    	<script type="text/javascript">
+    		$(document).ready(function(){
+    			$(document).on("submit", "#add",function(){
+    				$.post("/notes/create", $(this).serialize(), function(res){
+       					$("#notes").html(res);
+    					$(".description").val("");
+    					$(".title").val("");
+    				});
+    				return false;
+    			});
+    			$(document).on("change", "#text", function(){
+    				var num = $(this).attr("class");
+    				$.post("/notes/update/" + num, $(this).serialize(), function(res){
+    					$("#notes").html(res);
+    				});
+    				return false
+    			});
+    			$(document).on("submit", "#delete", function(){
+    				var num = $(this).attr("class");
+    				$.post("/notes/delete/" + num, $(this).serialize(), function(res){
+    					$("#notes").html(res)
+    				});
+    				return false;
+    			})
+    		})
+    	</script>
+	</head>
+	<body>
+		<h2>Notes</h2>
+		<div id="notes">
+			{% for note in notes %}
+				<form action="/notes/update/{{ note['id'] }}" method="post">
+					<h4>{{ note["title"] }}</h4>
+					<textarea id = "text" class="{{ note['id'] }}" name="note_update">{{ note["description"] }}</textarea>
+					<input type="hidden" value="update" name="{{ note['id'] }}">
+				</form>
+				<form id="delete" class="{{ note['id'] }}" action="/notes/delete/{{ note['id'] }}" method="post">
+					<input type="submit" value="delete" name="{{ note['id'] }}">
+				</form>
+			{% endfor %}
+		</div>
+		<form id = "add" action="" method="post">
+			<textarea class= "description" name="description" placeholder="write note here"></textarea><br>
+			<br>
+			<input class="title" name="title" placeholder="Insert note title here"><br>
+			<br>
+			<button type="submit">Add Note</button>
+		</form>
+	</body>
+</html>

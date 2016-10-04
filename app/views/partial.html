@@ -1,0 +1,15 @@
+
+<html>
+	<div id="notes">
+		{% for note in notes %}
+			<form action="/notes/update/{{ note['id'] }}" method="post">
+				<h4>{{ note["title"] }}</h4>
+				<textarea id = "text" class="{{ note['id'] }}" name="note_update">{{ note["description"] }}</textarea>
+				<input type="hidden" value="update" name="{{ note['id'] }}">
+			</form>
+			<form id="delete" class="{{ note['id'] }}" action="/notes/delete/{{ note['id'] }}" method="post">
+				<input type="submit" value="delete" name="{{ note['id'] }}">
+			</form>
+		{% endfor %}
+		</div>
+</html>
